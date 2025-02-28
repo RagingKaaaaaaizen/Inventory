@@ -1,23 +1,21 @@
 const { DataTypes } = require('sequelize');
-module.exports = model;
+
 function model(sequelize) {
     const attributes = {
-        email: { type: DataTypes.STRING, allowNull: false },
-        passwordhash: { type: DataTypes.STRING, allowNull: false },
-        title: { type: DataTypes.STRING, allowNull: false },
-        firstName: { type: DataTypes.STRING, allowNull: false },
-        lastName: { type: DataTypes.STRING, allowNull: false },
-        role: { type: DataTypes.STRING, allowNull: false },
+        part_Name: { type: DataTypes.STRING, allowNull: false },
+        category: { type: DataTypes.TEXT, allowNull: false },
+        brand: { type: DataTypes.STRING, allowNull: false },
+        model: { type: DataTypes.STRING, allowNull: false },
+        description: { type: DataTypes.TEXT, allowNull: false },
+        stock_quantity: { type: DataTypes.INTEGER, allowNull: false },
+        price: { type: DataTypes.INTEGER, allowNull: false },
     };
 
     const options = {
-        defaultScope: {
-            attributes: { exclude: ['passwordhash'] },
-        },
-        scopes: {
-            withHash: { attributes: {} },
-        },
+        timestamps: true, // Adds createdAt and updatedAt fields
     };
 
-    return sequelize.define('User', attributes, options);
+    return sequelize.define('Part', attributes, options);
 }
+
+module.exports = model;
