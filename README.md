@@ -1,1 +1,1 @@
-# inverntory    
+# inventory    
