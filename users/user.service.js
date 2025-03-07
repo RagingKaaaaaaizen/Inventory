@@ -20,68 +20,39 @@ async function getById(id) {
 
 async function create(params) {
     // validate
-    if (await db.User.findOne({ where: { email: params.email } })) {
-        throw 'Email "' + params.email + '" is already registered';
+    if (await db.User.findOne({ where: { part_name: params.part_name } })) {
+        throw 'Part name "' + params.part_name + '" is already registered';
     }
+
     const user = new db.User(params);
-
-    // hash password
-    user.passwordhash = await bcrypt.hash(params.password, 10);
-
-    // save user
     await user.save();
-
-    async function update(id, params) {
-        const user = await getUser(id);
-
-        // validate
-      const usernameChanged = user.username !== params.username;
-      if (usernameChanged && (await db.User.findOne({ where: { username: params.username } }))) {
-        throw 'Username "' + params.username + '" is already taken';
-      }
-
-      if (params.password) {
-        user.passwordhash = await bcrypt.hash(params.password, 10);
-      }
-
-      Object.assign(user, params);
-      await user.save();
-    }
-
-    async function _delete(id) {
-        const user = await getUser(id);
-        await user.destroy();
-    }
-    async function getUser(id) {
-        const user = await db.User.findByPk(id);
-        if (!user) throw 'User not found';
-        return user;
-    }
+    return user;
 }
 
 async function update(id, params) {
-    const user = await db.User.findByPk(id);
+    const user = await getUser(id);
     
-    // validate
-    if (!user) throw 'User not found';
-    
-    // hash password if it was entered
-    if (params.password) {
-        params.hash = await bcrypt.hash(params.password, 10);
+    // validate if part name is being changed
+    const partNameChanged = params.part_name && user.part_name !== params.part_name;
+    if (partNameChanged && await db.User.findOne({ where: { part_name: params.part_name } })) {
+        throw 'Part name "' + params.part_name + '" is already taken';
     }
 
     // copy params to user and save
     Object.assign(user, params);
     await user.save();
-    
-    return omitHash(user.get());
+    return user;
 }
 
 async function _delete(id) {
-    const user = await db.User.findByPk(id);
-    
-    if (!user) throw 'User not found';
-    
+    const user = await getUser(id);
     await user.destroy();
+}
+
+// helper function
+async function getUser(id) {
+    const user = await db.User.findByPk(id);
+    if (!user) throw 'Part not found';
+    return user;
 }
 

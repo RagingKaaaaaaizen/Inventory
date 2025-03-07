@@ -10,6 +10,7 @@ function model(sequelize) {
         stock: { type: DataTypes.INTEGER, allowNull: false },
         sku: { type: DataTypes.STRING, allowNull: false, unique: true },
         isActive: { type: DataTypes.BOOLEAN, defaultValue: true }
+        
     };
 
     const options = {
